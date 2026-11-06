@@ -24,11 +24,14 @@ JNIProject/
 │       └── native/
 │           └── jnimessagebox.c
 └── pom.xml
-
+```
 ## File Needed
 - JniMessageBoxDemo.java
 - jnimessagebox.c
 - com_satya_jni_main_JniMessageBoxDemo.h
 
 ## Build and Run
-You can build and execute the entire pipeline (Java compilation, JNI header generation, C compilation via MSVC, and Java execution) using a standard command prompt, You can compile and execute the project with standard Maven goals: mvn clean test-compile exec:java@run-java-app
+You can build and execute the entire pipeline (Java compilation, JNI header generation, C compilation via MSVC, and Java execution) using a standard command prompt, You can compile and execute the project with standard Maven goals:
+```diff
+mvn clean test-compile exec:java@run-java-app
+```
