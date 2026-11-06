@@ -1,4 +1,3 @@
-```markdown
 # Foreign Function & Memory (FFM) API Windows MessageBox Demo
 
 A pure Java implementation using Java's modern **Foreign Function & Memory (FFM) API** (JEP 454) to invoke native Windows DLL functions (`user32.dll` -> `MessageBoxA`) directly without writing C code, managing header generation, or invoking a C compiler.
@@ -10,9 +9,8 @@ A pure Java implementation using Java's modern **Foreign Function & Memory (FFM)
 - **Windows OS** (required for `user32.dll`)
 
 ## Project Structure
-
 ```text
-WindowsFfmDemo/
+FfmProject/
 ├── src/
 │   └── main/
 │       └── java/
@@ -22,6 +20,11 @@ WindowsFfmDemo/
 │                       └── main/
 │                           └── WindowsFfmPopup.java
 └── pom.xml
+```
 
 ## Build and Run
-Since FFM bypasses native compilation steps and compilers entirely, you can compile and execute the project with standard Maven goals: mvn clean compile exec:java
+
+Since FFM bypasses native compilation steps and compilers entirely, you can compile and execute the project with standard Maven goals: 
+```diff
+mvn clean compile exec:java
+```
