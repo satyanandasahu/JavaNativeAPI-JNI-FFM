@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.satya.jni</groupId>
+    <artifactId>JNIProject</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>JNI Demo</name>
+
+    <properties>
+        <java.version>26</java.version>
+        <maven.compiler.source>26</maven.compiler.source>
+        <maven.compiler.target>26</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <build>
+        <plugins>
+            <!-- 1. Compile Java classes -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+            </plugin>
+
+            <!-- 2. Generate JNI Header automatically using javac -h -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>generate-jni-header</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>javac</executable>
+                            <arguments>
+                                <argument>-h</argument>
+                                <argument>${project.basedir}/src/main/native</argument>
+                                <argument>-cp</argument>
+                                <argument>${project.build.outputDirectory}</argument>
+                                <argument>${project.basedir}/src/main/java/com/satya/jni/main/JniMessageBoxDemo.java</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+
+                    <!-- 3. Initialize MSVC and Compile C Code in a single shell session -->
+                    <execution>
+                        <id>compile-native-dll</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>cmd.exe</executable>
+                            <workingDirectory>${project.basedir}/src/main/native</workingDirectory>
+                            <arguments>
+                                <argument>/c</argument>
+                                <argument>call "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Auxiliary\Build\vcvarsall.bat" x64 &amp;&amp; cl /LD jnimessagebox.c -I"%JAVA_HOME%\include" -I"%JAVA_HOME%\include\win32" user32.lib</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+
+                    <!-- 4. Run the Java application with native library path configured -->
+                    <execution>
+                        <id>run-java-app</id>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>com.satya.jni.main.JniMessageBoxDemo</mainClass>
+                            <systemProperties>
+                                <property>
+                                    <key>java.library.path</key>
+                                    <value>${project.basedir}/src/main/native</value>
+                                </property>
+                            </systemProperties>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
